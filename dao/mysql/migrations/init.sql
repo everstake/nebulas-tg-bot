@@ -29,8 +29,9 @@ CREATE TABLE `addresses`
 
 CREATE TABLE `users_addresses`
 (
-    `usr_id` int(11) NOT NULL,
-    `adr_id` int(11) NOT NULL,
+    `usr_id`    int(11)      NOT NULL,
+    `adr_id`    int(11)      NOT NULL,
+    `usa_alias` varchar(255) NOT NULL,
     UNIQUE KEY `users_addresses_usr_id_adr_id_uindex` (`usr_id`, `adr_id`),
     KEY `users_addresses_addresses_adr_id_fk` (`adr_id`),
     CONSTRAINT `users_addresses_addresses_adr_id_fk` FOREIGN KEY (`adr_id`) REFERENCES `addresses` (`adr_id`),

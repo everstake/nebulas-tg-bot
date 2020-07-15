@@ -13,17 +13,19 @@ import (
 )
 
 type Bot struct {
-	cfg        config.Config
-	dao        dao.DAO
-	api        *tgbotapi.BotAPI
-	routes     map[string]Route
-	dictionary models.Dictionary
+	cfg         config.Config
+	dao         dao.DAO
+	api         *tgbotapi.BotAPI
+	routes      map[string]Route
+	dictionary  models.Dictionary
+	cachedItems map[uint64]map[string]interface{}
 }
 
 func NewBot(d dao.DAO, cfg config.Config) *Bot {
 	return &Bot{
-		cfg: cfg,
-		dao: d,
+		cfg:         cfg,
+		dao:         d,
+		cachedItems: make(map[uint64]map[string]interface{}),
 	}
 }
 
@@ -81,7 +83,7 @@ func (bot *Bot) handleUpdate(update tgbotapi.Update) error {
 	if update.Message != nil {
 		route, ok := bot.routes[user.Step]
 		if !ok {
-			err = bot.routes[RouteStart].Request(user)
+			err = bot.routes[RouteStart].request(user)
 			if err != nil {
 				return fmt.Errorf("route(request:%s): %s", RouteStart, err.Error())
 			}
@@ -92,8 +94,11 @@ func (bot *Bot) handleUpdate(update tgbotapi.Update) error {
 			}
 			return nil
 		}
-		err = route.Response(update, user)
+		err = route.response(update, user)
 		if err != nil {
+			msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.oops", user.Lang))
+			_, _ = bot.api.Send(msg)
+			_ = bot.openRoute(RouteStart, user)
 			return fmt.Errorf("route(response:%s): %s", user.Step, err.Error())
 		}
 		return nil

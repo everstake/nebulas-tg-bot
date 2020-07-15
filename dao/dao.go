@@ -16,6 +16,11 @@ type (
 		GetUsers(filter filters.Users) (users []models.User, err error)
 		CreateUser(user models.User) (models.User, error)
 		UpdateUser(user models.User) error
+
+		GetAddresses(filter filters.Addresses) (addresses []models.Address, err error)
+		CreateAddress(address models.Address) (models.Address, error)
+		CreateUserAddress(userAddress models.UserAddress) error
+		GetUsersAddresses(filter filters.UsersAddresses) (usersAddresses []models.UserAddress, err error)
 	}
 
 	daoImpl struct {
