@@ -1,0 +1,54 @@
+{
+  "b.add_address": {
+    "en" : "Add Subscription",
+    "cn" : "(CN) Add Subscription"
+  },
+  "b.show_addresses": {
+    "en" : "Show Addresses",
+    "cn" : "(CN) Show Addresses"
+  },
+  "b.settings": {
+    "en" : "⚙️ Settings",
+    "cn" : "(CN) Settings"
+  },
+  "b.lang_en": {
+    "en" : "English",
+    "cn" : "(CN) English"
+  },
+  "b.lang_cn": {
+    "en" : "China",
+    "cn" : "(CN) China"
+  },
+  "t.welcome": {
+    "en" : "Welcome",
+    "cn" : "(CN) Welcome"
+  },
+  "t.choose_lang": {
+    "en" : "Choose your lang",
+    "cn" : "(CN) Choose your lang"
+  },
+  "t.wrong_lang": {
+    "en" : "Wrong lang",
+    "cn" : "(CN) Wrong lang"
+  },
+  "t.menu": {
+    "en" : "Menu",
+    "cn" : "(CN) Menu"
+  },
+  "t.choose_option": {
+    "en" : "Choose option",
+    "cn" : "(CN) Choose option"
+  },
+  "b.change_lang": {
+    "en" : "Change lang",
+    "cn" : "(CN) Change lang"
+  },
+  "t.wrong_option": {
+    "en" : "Wrong option",
+    "cn" : "(CN) Wrong option"
+  },
+  "b.return_back": {
+    "en" : "Return back",
+    "cn" : "(CN) Return back"
+  }
+}
