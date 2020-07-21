@@ -15,6 +15,7 @@ type (
 	Config struct {
 		Mysql         Mysql  `json:"mysql"`
 		TelegramToken string `json:"telegram_token"`
+		Node          string `json:"node"`
 	}
 	Mysql struct {
 		Host     string `json:"host"`

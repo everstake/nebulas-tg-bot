@@ -1,9 +1,9 @@
 {
-  "b.add_address": {
+  "b.add_subscription": {
     "en": "Add Subscription",
     "cn": "(CN) Add Subscription"
   },
-  "b.show_addresses": {
+  "b.show_subscriptions": {
     "en": "Show Addresses",
     "cn": "(CN) Show Addresses"
   },
@@ -74,5 +74,61 @@
   "t.address_already_added": {
     "en": "Address already added",
     "cn": "(CN) Address already added"
+  },
+  "b.cancel": {
+    "en": "Cancel",
+    "cn": "(CN) Cancel"
+  },
+  "t.choose_address_type": {
+    "en": "Choose type of address",
+    "cn": "(CN) Choose type of address"
+  },
+  "b.account_address": {
+    "en": "Account address",
+    "cn": "(CN) Account address"
+  },
+  "b.validator_address": {
+    "en": "Validator address",
+    "cn": "(CN) Validator address"
+  },
+  "b.mute": {
+    "en": "Mute notifications",
+    "cn": "(CN) Mute notifications"
+  },
+  "b.unmute": {
+    "en": "Unmute notifications",
+    "cn": "(CN) Unmute notifications"
+  },
+  "t.muted": {
+    "en": "Notifications have been disabled",
+    "cn": "(CN) Notifications have been disabled"
+  },
+  "t.unmuted": {
+    "en": "Notifications have been enabled",
+    "cn": "(CN) Notifications have been enabled"
+  },
+  "b.change_treshold": {
+    "en": "Change treshold",
+    "cn": "(CN) Change treshold"
+  },
+  "t.paste_treshold": {
+    "en": "Paste your min and max treshold. Example: `0.5 50` ",
+    "cn": "(CN) Paste your min and max treshold. Example: `0.5 50` "
+  },
+  "t.invalid_treshold": {
+    "en": "Invalid treshold format. Example: `0.5 50` ",
+    "cn": "(CN) Invalid treshold format. Example: `0.5 50`  "
+  },
+  "t.successful_updated": {
+    "en": "successful Updated ",
+    "cn": "(CN) successful Updated  "
+  },
+  "b.delete": {
+    "en": "Delete",
+    "cn": "(CN) Delete"
+  },
+  "b.link": {
+    "en": "Link",
+    "cn": "(CN) Link"
   }
 }

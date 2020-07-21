@@ -21,6 +21,11 @@ type (
 		CreateAddress(address models.Address) (models.Address, error)
 		CreateUserAddress(userAddress models.UserAddress) error
 		GetUsersAddresses(filter filters.UsersAddresses) (usersAddresses []models.UserAddress, err error)
+		GetUsersAddressReports(filter filters.UsersAddresses) (items []models.UserAddressReport, err error)
+		DeleteUserAddress(userID uint64, addressID uint64) error
+
+		UpdateState(state models.State) error
+		GetState(title string) (state models.State, err error)
 	}
 
 	daoImpl struct {

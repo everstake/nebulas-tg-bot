@@ -8,24 +8,43 @@ import (
 	"github.com/everstake/nebulas-tg-bot/dao/filters"
 	"github.com/everstake/nebulas-tg-bot/log"
 	"github.com/everstake/nebulas-tg-bot/models"
+	"github.com/everstake/nebulas-tg-bot/services/market"
+	"github.com/everstake/nebulas-tg-bot/services/node"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/shopspring/decimal"
 	"io/ioutil"
+	"strings"
 )
 
-type Bot struct {
-	cfg         config.Config
-	dao         dao.DAO
-	api         *tgbotapi.BotAPI
-	routes      map[string]Route
-	dictionary  models.Dictionary
-	cachedItems map[uint64]map[string]interface{}
-}
+type (
+	Bot struct {
+		cfg         config.Config
+		dao         dao.DAO
+		api         *tgbotapi.BotAPI
+		node        NodeAPI
+		market      marketAPI
+		routes      map[string]Route
+		dictionary  models.Dictionary
+		cachedItems map[uint64]map[string]interface{}
+	}
+	marketAPI interface {
+		GetPrice() decimal.Decimal
+		Run()
+	}
+	NodeAPI interface {
+		GetAccountState(address string) (state node.AccountState, err error)
+		GetBlock(height uint64) (block node.Block, err error)
+		GetLatestIrreversibleBlock(height uint64) (block node.Block, err error)
+	}
+)
 
 func NewBot(d dao.DAO, cfg config.Config) *Bot {
 	return &Bot{
 		cfg:         cfg,
 		dao:         d,
 		cachedItems: make(map[uint64]map[string]interface{}),
+		market:      market.NewMarket(),
+		node:        node.NewAPI(cfg.Node),
 	}
 }
 
@@ -44,6 +63,8 @@ func (bot *Bot) Run() (err error) {
 		return fmt.Errorf("json.Unmarshal: %s", err.Error())
 	}
 
+	go bot.market.Run()
+
 	bot.SetRoutes()
 
 	u := tgbotapi.NewUpdate(0)
@@ -53,10 +74,12 @@ func (bot *Bot) Run() (err error) {
 
 	for update := range updates {
 		if update.CallbackQuery != nil {
-			fmt.Println(update.CallbackQuery.Data)
-			fmt.Println(update.CallbackQuery.Message.Text)
+			err = bot.handleActions(update)
+			if err != nil {
+				log.Error("Bot: handleActions: %s", err.Error())
+			}
 		}
-		if update.Message != nil { // ignore any non-Message Updates
+		if update.Message != nil {
 			err = bot.handleUpdate(update)
 			if err != nil {
 				log.Error("Bot: handleUpdate: %s", err.Error())
@@ -79,31 +102,67 @@ func (bot *Bot) handleUpdate(update tgbotapi.Update) error {
 	if err != nil {
 		return fmt.Errorf("findOrCreateUser: %s", err.Error())
 	}
-
-	if update.Message != nil {
-		route, ok := bot.routes[user.Step]
-		if !ok {
-			err = bot.routes[RouteStart].request(user)
-			if err != nil {
-				return fmt.Errorf("route(request:%s): %s", RouteStart, err.Error())
-			}
-			user.Step = RouteStart
-			err = bot.dao.UpdateUser(user)
-			if err != nil {
-				return fmt.Errorf("dao.UpdateUser: %s", err.Error())
-			}
-			return nil
-		}
-		err = route.response(update, user)
+	if update.Message.Text == "/start" {
+		_ = bot.openRoute(RouteStart, user)
+		return nil
+	}
+	route, ok := bot.routes[user.Step]
+	if !ok {
+		err = bot.routes[RouteStart].request(user)
 		if err != nil {
-			msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.oops", user.Lang))
-			_, _ = bot.api.Send(msg)
-			_ = bot.openRoute(RouteStart, user)
-			return fmt.Errorf("route(response:%s): %s", user.Step, err.Error())
+			return fmt.Errorf("route(request:%s): %s", RouteStart, err.Error())
+		}
+		user.Step = RouteStart
+		err = bot.dao.UpdateUser(user)
+		if err != nil {
+			return fmt.Errorf("dao.UpdateUser: %s", err.Error())
 		}
 		return nil
 	}
+	err = route.response(update, user)
+	if err != nil {
+		msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.oops", user.Lang))
+		_, _ = bot.api.Send(msg)
+		_ = bot.openRoute(RouteStart, user)
+		return fmt.Errorf("route(response:%s): %s", user.Step, err.Error())
+	}
+	return nil
+}
 
+func (bot *Bot) handleActions(update tgbotapi.Update) error {
+	users, err := bot.dao.GetUsers(filters.Users{TgIDs: []int64{update.CallbackQuery.Message.Chat.ID}})
+	if err != nil {
+		return fmt.Errorf("dao.GetUsers: %s", err.Error())
+	}
+	if len(users) == 0 {
+		return nil
+	}
+	query := update.CallbackQuery.Data
+	parts := strings.Split(query, "_")
+	switch parts[0] {
+	case "delete":
+		if len(parts) == 1 {
+			return nil
+		}
+		addresses, err := bot.dao.GetAddresses(filters.Addresses{Addresses: []string{parts[1]}})
+		if err != nil {
+			return fmt.Errorf("dao.GetAddresses: %s", err.Error())
+		}
+		if len(addresses) == 0 {
+			return nil
+		}
+		err = bot.dao.DeleteUserAddress(users[0].ID, addresses[0].ID)
+		if err != nil {
+			return fmt.Errorf("dao.GetAddresses: %s", err.Error())
+		}
+		_, err = bot.api.DeleteMessage(tgbotapi.DeleteMessageConfig{
+			ChatID:    users[0].TgID,
+			MessageID: update.CallbackQuery.Message.MessageID,
+		})
+		if err != nil {
+			return fmt.Errorf("api.DeleteMessage: %s", err.Error())
+		}
+	}
 	return nil
 }
 

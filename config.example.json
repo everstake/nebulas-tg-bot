@@ -6,5 +6,6 @@
     "user": "root",
     "password": "secret"
   },
-  "telegram_token": ""
+  "telegram_token": "",
+  "node": "http://localhost:8695"
 }

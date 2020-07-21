@@ -29,9 +29,10 @@ CREATE TABLE `addresses`
 
 CREATE TABLE `users_addresses`
 (
-    `usr_id`    int(11)      NOT NULL,
-    `adr_id`    int(11)      NOT NULL,
-    `usa_alias` varchar(255) NOT NULL,
+    `usr_id`    int(11)                      NOT NULL,
+    `adr_id`    int(11)                      NOT NULL,
+    `usa_alias` varchar(255)                 NOT NULL,
+    `usa_type`  enum ('account','validator') NOT NULL,
     UNIQUE KEY `users_addresses_usr_id_adr_id_uindex` (`usr_id`, `adr_id`),
     KEY `users_addresses_addresses_adr_id_fk` (`adr_id`),
     CONSTRAINT `users_addresses_addresses_adr_id_fk` FOREIGN KEY (`adr_id`) REFERENCES `addresses` (`adr_id`),
@@ -39,6 +40,18 @@ CREATE TABLE `users_addresses`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
+
+CREATE TABLE `states`
+(
+    `stt_title` varchar(255) NOT NULL,
+    `stt_value` text         NOT NULL,
+    PRIMARY KEY (`stt_title`),
+    UNIQUE KEY `states_stt_title_uindex` (`stt_title`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+INSERT INTO states (stt_title, stt_value) VALUES ('current_height', 1);
 
 -- +migrate Down
 drop table users_addresses;
