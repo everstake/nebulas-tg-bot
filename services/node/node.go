@@ -137,7 +137,7 @@ func (api *API) GetBlock(height uint64) (block Block, err error) {
 	return block, err
 }
 
-func (api *API) GetLatestIrreversibleBlock(height uint64) (block Block, err error) {
+func (api *API) GetLatestIrreversibleBlock() (block Block, err error) {
 	err = api.get("v1/user/lib", &block)
 	return block, err
 }

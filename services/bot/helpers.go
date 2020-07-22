@@ -65,6 +65,14 @@ func (bot *Bot) showSubscriptions(user models.User) (err error) {
 	if err != nil {
 		return fmt.Errorf("getSubscriptions: %s", err.Error())
 	}
+	if len(states) == 0 {
+		msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.not_have_addresses", user.Lang))
+		_, err := bot.api.Send(msg)
+		if err != nil {
+			return fmt.Errorf("api.Send: %s", err.Error())
+		}
+		return nil
+	}
 	for _, state := range states {
 		text := fmt.Sprintf(
 			"Alias: %s\nAddress: %s\nNAS: %s (%s$)\nType: %s",
@@ -99,6 +107,9 @@ func (bot *Bot) getSubscriptions(user models.User) (states []models.AddressState
 	})
 	if err != nil {
 		return nil, fmt.Errorf("dao.GetUsersAddressReports: %s", err.Error())
+	}
+	if len(addresses) == 0 {
+		return nil, nil
 	}
 	errChan := make(chan error)
 	stateCh := make(chan models.AddressState)

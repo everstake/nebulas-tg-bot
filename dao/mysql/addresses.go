@@ -62,6 +62,9 @@ func (m DB) GetUsersAddressReports(filter filters.UsersAddresses) (items []model
 	if len(filter.AddressesID) != 0 {
 		q = q.Where(squirrel.Eq{"users_addresses.adr_id": filter.AddressesID})
 	}
+	if filter.Limit != 0 {
+		q = q.Limit(filter.Limit)
+	}
 	err = m.find(&items, q)
 	return items, err
 }

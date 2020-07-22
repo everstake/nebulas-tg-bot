@@ -14,6 +14,7 @@ import (
 	"github.com/shopspring/decimal"
 	"io/ioutil"
 	"strings"
+	"sync"
 )
 
 type (
@@ -25,7 +26,11 @@ type (
 		market      marketAPI
 		routes      map[string]Route
 		dictionary  models.Dictionary
-		cachedItems map[uint64]map[string]interface{}
+		cachedItems map[uint64]map[string]interface{} // [userID][key]
+		mu          *sync.RWMutex
+		addresses   map[string]map[uint64]struct{} // [address][userID]
+		validators  map[string]map[uint64]struct{} // [address][userID]
+		users       map[uint64]models.User
 	}
 	marketAPI interface {
 		GetPrice() decimal.Decimal
@@ -34,7 +39,7 @@ type (
 	NodeAPI interface {
 		GetAccountState(address string) (state node.AccountState, err error)
 		GetBlock(height uint64) (block node.Block, err error)
-		GetLatestIrreversibleBlock(height uint64) (block node.Block, err error)
+		GetLatestIrreversibleBlock() (block node.Block, err error)
 	}
 )
 
@@ -45,6 +50,10 @@ func NewBot(d dao.DAO, cfg config.Config) *Bot {
 		cachedItems: make(map[uint64]map[string]interface{}),
 		market:      market.NewMarket(),
 		node:        node.NewAPI(cfg.Node),
+		mu:          &sync.RWMutex{},
+		addresses:   make(map[string]map[uint64]struct{}),
+		validators:  make(map[string]map[uint64]struct{}),
+		users:       make(map[uint64]models.User),
 	}
 }
 
@@ -63,7 +72,13 @@ func (bot *Bot) Run() (err error) {
 		return fmt.Errorf("json.Unmarshal: %s", err.Error())
 	}
 
+	err = bot.setAddresses()
+	if err != nil {
+		return fmt.Errorf("setAddresses: %s", err.Error())
+	}
+
 	go bot.market.Run()
+	go bot.Parsing()
 
 	bot.SetRoutes()
 
@@ -137,6 +152,7 @@ func (bot *Bot) handleActions(update tgbotapi.Update) error {
 	if len(users) == 0 {
 		return nil
 	}
+	user := users[0]
 	query := update.CallbackQuery.Data
 	parts := strings.Split(query, "_")
 	switch parts[0] {
@@ -151,17 +167,18 @@ func (bot *Bot) handleActions(update tgbotapi.Update) error {
 		if len(addresses) == 0 {
 			return nil
 		}
-		err = bot.dao.DeleteUserAddress(users[0].ID, addresses[0].ID)
+		err = bot.dao.DeleteUserAddress(user.ID, addresses[0].ID)
 		if err != nil {
 			return fmt.Errorf("dao.GetAddresses: %s", err.Error())
 		}
 		_, err = bot.api.DeleteMessage(tgbotapi.DeleteMessageConfig{
-			ChatID:    users[0].TgID,
+			ChatID:    user.TgID,
 			MessageID: update.CallbackQuery.Message.MessageID,
 		})
 		if err != nil {
 			return fmt.Errorf("api.DeleteMessage: %s", err.Error())
 		}
+		bot.removeAddress(user, addresses[0])
 	}
 	return nil
 }

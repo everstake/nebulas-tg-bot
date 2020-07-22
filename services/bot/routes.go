@@ -59,6 +59,7 @@ func (bot *Bot) SetRoutes() {
 					}
 				}
 				user.Lang = lang
+				bot.updateUserSettings(user)
 				err := bot.openRoute(RouteStart, user)
 				if err != nil {
 					return fmt.Errorf("openRoute: %s", err.Error())
@@ -162,6 +163,7 @@ func (bot *Bot) SetRoutes() {
 					if err != nil {
 						return fmt.Errorf("dao.UpdateUser: %s", err.Error())
 					}
+					bot.updateUserSettings(user)
 					btnText := "t.muted"
 					if !user.Mute {
 						btnText = "t.unmuted"
@@ -368,6 +370,14 @@ func (bot *Bot) SetRoutes() {
 				if err != nil {
 					return fmt.Errorf("dao.CreateUserAddress: %s", err.Error())
 				}
+
+				switch itemTypeAddress.(string) {
+				case models.AddressTypeValidator:
+					bot.addValidatorAddress(user, addressModel)
+				case models.AddressTypeAccount:
+					bot.addValidatorAddress(user, addressModel)
+				}
+
 				msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.address_added", user.Lang))
 				_, err = bot.api.Send(msg)
 				if err != nil {
@@ -435,6 +445,7 @@ func (bot *Bot) SetRoutes() {
 				if err != nil {
 					return fmt.Errorf("api.Send: %s", err.Error())
 				}
+				bot.updateUserSettings(user)
 				err = bot.openRoute(RouteSettings, user)
 				if err != nil {
 					return fmt.Errorf("openRoute: %s", err.Error())

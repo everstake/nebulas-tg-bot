@@ -130,5 +130,9 @@
   "b.link": {
     "en": "Link",
     "cn": "(CN) Link"
+  },
+  "t.not_have_addresses": {
+    "en": "You don`t have any address",
+    "cn": "(CN) You don`t have any address"
   }
 }

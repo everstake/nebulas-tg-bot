@@ -4,6 +4,9 @@ import "time"
 
 const UserAddressesTable = "users_addresses"
 
+const AddressTypeValidator = "validator"
+const AddressTypeAccount = "account"
+
 type UserAddress struct {
 	UserID    uint64 `db:"usr_id"`
 	AddressID uint64 `db:"adr_id"`
