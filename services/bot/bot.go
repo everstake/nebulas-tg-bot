@@ -33,13 +33,15 @@ type (
 		users       map[uint64]models.User
 	}
 	marketAPI interface {
-		GetPrice() decimal.Decimal
+		GetNASPrice() decimal.Decimal
+		GetNAXPrice() decimal.Decimal
 		Run()
 	}
 	NodeAPI interface {
 		GetAccountState(address string) (state node.AccountState, err error)
 		GetBlock(height uint64) (block node.Block, err error)
 		GetLatestIrreversibleBlock() (block node.Block, err error)
+		GetNAXBalance(address string) (result node.NAXBalanceResult, err error)
 	}
 )
 
@@ -194,6 +196,7 @@ func (bot *Bot) findOrCreateUser(update tgbotapi.Update) (user models.User, err 
 			TgID:     tgID,
 			Name:     update.Message.Chat.FirstName + " " + update.Message.Chat.LastName,
 			Username: update.Message.Chat.UserName,
+			Lang:     "en",
 		})
 		if err != nil {
 			return user, fmt.Errorf("dao.CreateUser: %s", err.Error())

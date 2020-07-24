@@ -9,9 +9,11 @@ import (
 
 type (
 	Market struct {
-		price   decimal.Decimal
-		tracker Tracker
-		mu      *sync.Mutex
+		priceNAS   decimal.Decimal
+		priceNAX   decimal.Decimal
+		trackerNAS Tracker
+		trackerNAX Tracker
+		mu         *sync.Mutex
 	}
 	Tracker interface {
 		GetPrice() (price decimal.Decimal, err error)
@@ -19,40 +21,68 @@ type (
 )
 
 func NewMarket() *Market {
-	price := decimal.Zero
-	tracker := okex{}
+	priceNAS := decimal.Zero
+	trackerNAS := okex{}
 	var err error
 	for {
-		price, err = tracker.GetPrice()
+		priceNAS, err = trackerNAS.GetPrice()
 		if err != nil {
-			log.Error("Market: tracker.GetPrice: %s", err.Error())
+			log.Error("Market: tracker.GetPrice(nas): %s", err.Error())
+			<-time.After(time.Second * 5)
+		} else {
+			break
+		}
+	}
+	priceNAX := decimal.Zero
+	trackerNAX := gate{}
+	for {
+		priceNAX, err = trackerNAX.GetPrice()
+		if err != nil {
+			log.Error("Market: tracker.GetPrice(nax): %s", err.Error())
 			<-time.After(time.Second * 5)
 		} else {
 			break
 		}
 	}
 	return &Market{
-		price:   price,
-		tracker: &tracker,
-		mu:      &sync.Mutex{},
+		priceNAS:   priceNAS,
+		priceNAX:   priceNAX,
+		trackerNAS: &trackerNAS,
+		trackerNAX: &trackerNAX,
+		mu:         &sync.Mutex{},
 	}
 }
 
 func (m *Market) Run() {
-	var err error
 	for {
 		<-time.After(time.Minute * 5)
-		m.mu.Lock()
-		m.price, err = m.tracker.GetPrice()
-		m.mu.Unlock()
+		nas, err := m.trackerNAS.GetPrice()
 		if err != nil {
-			log.Error("Market: tracker.GetPrice: %s", err.Error())
+			log.Error("Market: tracker.GetPrice(nas): %s", err.Error())
+		} else {
+			m.mu.Lock()
+			m.priceNAS = nas
+			m.mu.Unlock()
+		}
+		nax, err := m.trackerNAX.GetPrice()
+		if err != nil {
+			log.Error("Market: tracker.GetPrice(nax): %s", err.Error())
+		} else {
+			m.mu.Lock()
+			m.priceNAX = nax
+			m.mu.Unlock()
 		}
 	}
 }
 
-func (m *Market) GetPrice() decimal.Decimal {
+func (m *Market) GetNASPrice() decimal.Decimal {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	return m.price.Add(decimal.Zero)
+	return m.priceNAS.Add(decimal.Zero)
+}
+
+func (m *Market) GetNAXPrice() decimal.Decimal {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.priceNAX.Add(decimal.Zero)
 }

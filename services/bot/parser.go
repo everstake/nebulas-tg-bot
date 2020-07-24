@@ -64,7 +64,7 @@ func (bot *Bot) txNotify(address string, tx node.Transaction) {
 	if tx.Status != 1 {
 		status = "failed"
 	}
-	value := tx.Value.Div(node.PrecisionDiv)
+	value := tx.Value.Div(node.PrecisionDivNAS)
 	txt := fmt.Sprintf(
 		"[Transaction]\nHash: %s\nFrom: %s\nTo: %s\nValue: %s\nBlock: %d\nStatus: %s",
 		tx.Hash,

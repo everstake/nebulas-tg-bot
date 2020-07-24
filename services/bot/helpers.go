@@ -60,7 +60,8 @@ func (bot *Bot) oops(user models.User) error {
 }
 
 func (bot *Bot) showSubscriptions(user models.User) (err error) {
-	price := bot.market.GetPrice()
+	nasPrice := bot.market.GetNASPrice()
+	naxPrice := bot.market.GetNAXPrice()
 	states, err := bot.getSubscriptions(user)
 	if err != nil {
 		return fmt.Errorf("getSubscriptions: %s", err.Error())
@@ -75,11 +76,13 @@ func (bot *Bot) showSubscriptions(user models.User) (err error) {
 	}
 	for _, state := range states {
 		text := fmt.Sprintf(
-			"Alias: %s\nAddress: %s\nNAS: %s (%s$)\nType: %s",
+			"Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s",
 			state.Alias,
 			state.Address,
 			state.NAS.Truncate(4).String(),
-			state.NAS.Mul(price).Truncate(0).String(),
+			state.NAS.Mul(nasPrice).Truncate(0).String(),
+			state.NAX.Truncate(4).String(),
+			state.NAX.Mul(naxPrice).Truncate(0).String(),
 			state.Type,
 		)
 		url := fmt.Sprintf("https://explorer.nebulas.io/#/address/%s", state.Address)
@@ -124,9 +127,16 @@ func (bot *Bot) getSubscriptions(user models.User) (states []models.AddressState
 				errChan <- fmt.Errorf("node.GetAccountState: %s", err.Error())
 				return
 			}
+			naxBalance, err := bot.node.GetNAXBalance(address.Address)
+			if err != nil {
+				errChan <- fmt.Errorf("node.GetNAXBalance: %s", err.Error())
+				return
+			}
+			nax := node.TransformNAXAmount(naxBalance.Result.Result)
 			stateCh <- models.AddressState{
 				Address: address.Address,
-				NAS:     as.Result.Balance.Div(node.PrecisionDiv),
+				NAS:     as.Result.Balance.Div(node.PrecisionDivNAS),
+				NAX:     nax.Div(node.PrecisionDivNAX),
 				Alias:   address.Alias,
 				Type:    address.Type,
 			}

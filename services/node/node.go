@@ -7,11 +7,16 @@ import (
 	"github.com/shopspring/decimal"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 const PrecisionNAS = 18
+const PrecisionNAX = 9
+const naxContract = "n1etmdwczuAUCnMMvpGasfi8kwUbb2ddvRJ"
+const someAddress = "n1Jkdiq1H1HSXYJXtvDDkYm84Tmapo4hhMv"
 
-var PrecisionDiv = decimal.New(1, PrecisionNAS)
+var PrecisionDivNAS = decimal.New(1, PrecisionNAS)
+var PrecisionDivNAX = decimal.New(1, PrecisionNAX)
 
 type (
 	API struct {
@@ -63,6 +68,24 @@ type (
 		GasUsed         decimal.Decimal `json:"gas_used"`
 		BlockHeight     uint64          `json:"block_height,string"`
 	}
+	CallRequest struct {
+		From     string       `json:"from"`
+		To       string       `json:"to"`
+		Value    string       `json:"value"`
+		GasPrice string       `json:"gasPrice"`
+		GasLimit string       `json:"gasLimit"`
+		Contract CallContract `json:"contract"`
+	}
+	CallContract struct {
+		Function string `json:"function"`
+		Args     string `json:"args"`
+	}
+	NAXBalanceResult struct {
+		Result struct {
+			Result     string `json:"result"`
+			ExecuteErr string `json:"execute_err"`
+		} `json:"result"`
+	}
 )
 
 func NewAPI(url string) *API {
@@ -72,7 +95,7 @@ func NewAPI(url string) *API {
 	}
 }
 
-func (api *API) post(endpoint string, params map[string]interface{}, data interface{}) error {
+func (api *API) post(endpoint string, params interface{}, data interface{}) error {
 	url := fmt.Sprintf("%s/%s", api.url, endpoint)
 	var body []byte
 	if params != nil {
@@ -140,4 +163,35 @@ func (api *API) GetBlock(height uint64) (block Block, err error) {
 func (api *API) GetLatestIrreversibleBlock() (block Block, err error) {
 	err = api.get("v1/user/lib", &block)
 	return block, err
+}
+
+func (api *API) GetNAXBalance(address string) (result NAXBalanceResult, err error) {
+	args, _ := json.Marshal([]string{address})
+	contract := CallContract{
+		Function: "balanceOf",
+		Args:     string(args),
+	}
+	err = api.callContract(naxContract, contract, &result)
+	if err == nil && result.Result.ExecuteErr != "" {
+		return result, fmt.Errorf(result.Result.ExecuteErr)
+	}
+	return result, err
+}
+
+func (api *API) callContract(contractAddress string, contract CallContract, data interface{}) (err error) {
+	call := CallRequest{
+		From:     someAddress,
+		To:       contractAddress,
+		Value:    "0",
+		GasPrice: "20000000000",
+		GasLimit: "2000000",
+		Contract: contract,
+	}
+	return api.post("v1/user/call", call, &data)
+}
+
+func TransformNAXAmount(str string) (d decimal.Decimal) {
+	str = strings.ReplaceAll(str, "\"", "")
+	d, _ = decimal.NewFromString(str)
+	return d
 }
