@@ -1,0 +1,39 @@
+version: "3.7"
+services:
+  go:
+    restart: always
+    container_name: nebulas-tg-bot
+    build: .
+    volumes:
+      - ./:/nebulas-tg-bot
+      - ~/.ssh:/root/.ssh
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+    deploy:
+      resources:
+        limits:
+          memory: 5000M
+        reservations:
+          memory: 2000M
+  mysql:
+    restart: always
+    ports:
+      - "3306:3306"
+    container_name: nebulas-tg-bot-mysql
+    image: mysql:8
+    volumes:
+      - ./mysql:/var/lib/mysql
+    env_file:
+      - ./docker/.env:./.env
+    environment:
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+    deploy:
+      resources:
+        limits:
+          memory: 5000M
+        reservations:
+          memory: 2000M

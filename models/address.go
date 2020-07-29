@@ -14,9 +14,10 @@ type Address struct {
 }
 
 type AddressState struct {
-	Address string          `json:"address"`
-	NAS     decimal.Decimal `json:"nas"`
-	NAX     decimal.Decimal `json:"nax"`
-	Alias   string          `json:"alias"`
-	Type    string          `json:"type"`
+	Address    string          `json:"address"`
+	NAS        decimal.Decimal `json:"nas"`
+	NAX        decimal.Decimal `json:"nax"`
+	Alias      string          `json:"alias"`
+	Type       string          `json:"type"`
+	TotalVotes decimal.Decimal `json:"total_votes"`
 }

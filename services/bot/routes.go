@@ -16,7 +16,7 @@ const (
 	RouteTypeAddress    = "type_address"
 	RoutePasteAddress   = "paste_address"
 	RouteAddressAlias   = "address_alias"
-	RouteChangeTreshold = "change_treshold"
+	RouteChangeThreshold = "change_threshold"
 )
 
 type Route struct {
@@ -128,7 +128,7 @@ func (bot *Bot) SetRoutes() {
 						tgbotapi.NewKeyboardButton(bot.dictionary.Get("b.change_lang", user.Lang)),
 					),
 					tgbotapi.NewKeyboardButtonRow(
-						tgbotapi.NewKeyboardButton(bot.dictionary.Get("b.change_treshold", user.Lang)),
+						tgbotapi.NewKeyboardButton(bot.dictionary.Get("b.change_threshold", user.Lang)),
 					),
 					tgbotapi.NewKeyboardButtonRow(
 						tgbotapi.NewKeyboardButton(bot.dictionary.Get("b.return_back", user.Lang)),
@@ -177,8 +177,8 @@ func (bot *Bot) SetRoutes() {
 					if err != nil {
 						return fmt.Errorf("openRoute: %s", err.Error())
 					}
-				case bot.dictionary.Get("b.change_treshold", user.Lang):
-					err := bot.openRoute(RouteChangeTreshold, user)
+				case bot.dictionary.Get("b.change_threshold", user.Lang):
+					err := bot.openRoute(RouteChangeThreshold, user)
 					if err != nil {
 						return fmt.Errorf("openRoute: %s", err.Error())
 					}
@@ -390,14 +390,14 @@ func (bot *Bot) SetRoutes() {
 				return nil
 			},
 		},
-		RouteChangeTreshold: {
+		RouteChangeThreshold: {
 			request: func(user models.User) error {
 				var keyboard = tgbotapi.NewReplyKeyboard(
 					tgbotapi.NewKeyboardButtonRow(
 						tgbotapi.NewKeyboardButton(bot.dictionary.Get("b.return_back", user.Lang)),
 					),
 				)
-				msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.paste_treshold", user.Lang))
+				msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.paste_threshold", user.Lang))
 				msg.ReplyMarkup = keyboard
 				_, err := bot.api.Send(msg)
 				if err != nil {
@@ -417,7 +417,7 @@ func (bot *Bot) SetRoutes() {
 				msg = strings.TrimSpace(msg)
 				parts := strings.Split(msg, " ")
 				if len(parts) != 2 {
-					msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.invalid_treshold", user.Lang))
+					msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.invalid_threshold", user.Lang))
 					_, err := bot.api.Send(msg)
 					if err != nil {
 						return fmt.Errorf("api.Send: %s", err.Error())
@@ -427,15 +427,15 @@ func (bot *Bot) SetRoutes() {
 				min, minErr := decimal.NewFromString(parts[0])
 				max, maxErr := decimal.NewFromString(parts[1])
 				if minErr != nil || maxErr != nil {
-					msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.invalid_treshold", user.Lang))
+					msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.invalid_threshold", user.Lang))
 					_, err := bot.api.Send(msg)
 					if err != nil {
 						return fmt.Errorf("api.Send: %s", err.Error())
 					}
 					return nil
 				}
-				user.MinTreshold = min
-				user.MaxTreshold = max
+				user.MinThreshold = min
+				user.MaxThreshold = max
 				err := bot.dao.UpdateUser(user)
 				if err != nil {
 					return fmt.Errorf("dao.UpdateUser: %s", err.Error())

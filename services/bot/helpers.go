@@ -3,9 +3,11 @@ package bot
 import (
 	"fmt"
 	"github.com/everstake/nebulas-tg-bot/dao/filters"
+	"github.com/everstake/nebulas-tg-bot/log"
 	"github.com/everstake/nebulas-tg-bot/models"
 	"github.com/everstake/nebulas-tg-bot/services/node"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/shopspring/decimal"
 )
 
 func (bot *Bot) GetCachedItem(userID uint64, key string) (item interface{}, found bool) {
@@ -75,16 +77,35 @@ func (bot *Bot) showSubscriptions(user models.User) (err error) {
 		return nil
 	}
 	for _, state := range states {
-		text := fmt.Sprintf(
-			"Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s",
-			state.Alias,
-			state.Address,
-			state.NAS.Truncate(4).String(),
-			state.NAS.Mul(nasPrice).Truncate(0).String(),
-			state.NAX.Truncate(4).String(),
-			state.NAX.Mul(naxPrice).Truncate(0).String(),
-			state.Type,
-		)
+		var text string
+		switch state.Type {
+		case models.AddressTypeAccount:
+			text = fmt.Sprintf(
+				bot.dictionary.Get("t.address_subscription", user.Lang),
+				state.Alias,
+				state.Address,
+				state.NAS.Truncate(4).String(),
+				state.NAS.Mul(nasPrice).Truncate(0).String(),
+				state.NAX.Truncate(4).String(),
+				state.NAX.Mul(naxPrice).Truncate(0).String(),
+				state.Type,
+			)
+		case models.AddressTypeValidator:
+			text = fmt.Sprintf(
+				bot.dictionary.Get("t.validator_subscription", user.Lang),
+				state.Alias,
+				state.Address,
+				state.NAS.Truncate(4).String(),
+				state.NAS.Mul(nasPrice).Truncate(0).String(),
+				state.NAX.Truncate(4).String(),
+				state.NAX.Mul(naxPrice).Truncate(0).String(),
+				state.Type,
+				state.TotalVotes,
+			)
+		default:
+			continue
+		}
+
 		url := fmt.Sprintf("https://explorer.nebulas.io/#/address/%s", state.Address)
 		action := fmt.Sprintf("delete_%s", state.Address)
 		var keyboard = tgbotapi.NewInlineKeyboardMarkup(
@@ -132,13 +153,40 @@ func (bot *Bot) getSubscriptions(user models.User) (states []models.AddressState
 				errChan <- fmt.Errorf("node.GetNAXBalance: %s", err.Error())
 				return
 			}
-			nax := node.TransformNAXAmount(naxBalance.Result.Result)
+			totalVotes := decimal.Zero
+			if address.Type == models.AddressTypeValidator {
+				var nodeID string
+				bot.mu.RLock()
+				for _, n := range bot.nodes {
+					if n.Accounts.StakingAccount == address.Address ||
+						n.Accounts.Registrant == address.Address ||
+						n.Accounts.GovManager == address.Address ||
+						n.Accounts.ConsensusManager == address.Address {
+
+						nodeID = n.ID
+						break
+					}
+				}
+				bot.mu.RUnlock()
+				if nodeID != "" {
+					list, err := bot.node.GetNodeVotesList(nodeID)
+					if err != nil {
+						log.Error("getSubscriptions: node.GetNodeVotesList: %s", err.Error())
+					} else {
+						for _, vote := range list {
+							totalVotes = totalVotes.Add(vote.Value)
+						}
+						totalVotes = totalVotes.Div(node.PrecisionDivNAX)
+					}
+				}
+			}
 			stateCh <- models.AddressState{
-				Address: address.Address,
-				NAS:     as.Result.Balance.Div(node.PrecisionDivNAS),
-				NAX:     nax.Div(node.PrecisionDivNAX),
-				Alias:   address.Alias,
-				Type:    address.Type,
+				Address:    address.Address,
+				NAS:        as.Result.Balance.Div(node.PrecisionDivNAS),
+				NAX:        naxBalance.Div(node.PrecisionDivNAX),
+				Alias:      address.Alias,
+				Type:       address.Type,
+				TotalVotes: totalVotes,
 			}
 		}(i)
 	}
@@ -160,4 +208,22 @@ func (bot *Bot) getSubscriptions(user models.User) (states []models.AddressState
 	}
 
 	return states, nil
+}
+
+func getUniqStrings(items []string) []string {
+	var nItems []string
+	for _, item := range items {
+		found := false
+		for _, s := range nItems {
+			if s == item {
+				found = true
+				break
+			}
+		}
+		if !found {
+			nItems = append(nItems, item)
+		}
+	}
+	return nItems
+
 }

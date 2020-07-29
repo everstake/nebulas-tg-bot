@@ -7,12 +7,12 @@ import (
 	"github.com/shopspring/decimal"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 const PrecisionNAS = 18
 const PrecisionNAX = 9
 const naxContract = "n1etmdwczuAUCnMMvpGasfi8kwUbb2ddvRJ"
+const stakingContract = "n214bLrE3nREcpRewHXF7qRDWCcaxRSiUdw"
 const someAddress = "n1Jkdiq1H1HSXYJXtvDDkYm84Tmapo4hhMv"
 
 var PrecisionDivNAS = decimal.New(1, PrecisionNAS)
@@ -80,10 +80,34 @@ type (
 		Function string `json:"function"`
 		Args     string `json:"args"`
 	}
-	NAXBalanceResult struct {
+	ValidatorNode struct {
+		ID   string `json:"id"`
+		Info struct {
+			Name  string `json:"name"`
+			Email string `json:"email"`
+		} `json:"info"`
+		Accounts struct {
+			Registrant       string `json:"registrant"`
+			ConsensusManager string `json:"consensusManager"`
+			GovManager       string `json:"govManager"`
+			StakingAccount   string `json:"stakingAccount"`
+		} `json:"accounts"`
+		Type           int             `json:"type"`
+		Status         int             `json:"status"`
+		Online         bool            `json:"online"`
+		Approved       bool            `json:"approved"`
+		VoteValue      decimal.Decimal `json:"voteValue"`
+		StakingValue   decimal.Decimal `json:"stakingValue"`
+		StabilityIndex float64         `json:"stabilityIndex,string"`
+	}
+	Vote struct {
+		Address string          `json:"address"`
+		Value   decimal.Decimal `json:"value"`
+	}
+
+	Response struct {
 		Result struct {
-			Result     string `json:"result"`
-			ExecuteErr string `json:"execute_err"`
+			Result string `json:"result"`
 		} `json:"result"`
 	}
 )
@@ -165,16 +189,13 @@ func (api *API) GetLatestIrreversibleBlock() (block Block, err error) {
 	return block, err
 }
 
-func (api *API) GetNAXBalance(address string) (result NAXBalanceResult, err error) {
+func (api *API) GetNAXBalance(address string) (result decimal.Decimal, err error) {
 	args, _ := json.Marshal([]string{address})
 	contract := CallContract{
 		Function: "balanceOf",
 		Args:     string(args),
 	}
 	err = api.callContract(naxContract, contract, &result)
-	if err == nil && result.Result.ExecuteErr != "" {
-		return result, fmt.Errorf(result.Result.ExecuteErr)
-	}
 	return result, err
 }
 
@@ -187,11 +208,37 @@ func (api *API) callContract(contractAddress string, contract CallContract, data
 		GasLimit: "2000000",
 		Contract: contract,
 	}
-	return api.post("v1/user/call", call, &data)
+	var response Response
+	err = api.post("v1/user/call", call, &response)
+	if err != nil {
+		return fmt.Errorf("api.post: %s", err.Error())
+	}
+	err = json.Unmarshal([]byte(response.Result.Result), data)
+	if err != nil {
+		return fmt.Errorf("json.Unmarshal: %s", err.Error())
+	}
+	return nil
 }
 
-func TransformNAXAmount(str string) (d decimal.Decimal) {
-	str = strings.ReplaceAll(str, "\"", "")
-	d, _ = decimal.NewFromString(str)
-	return d
+func (api *API) GetNodesList() (list []ValidatorNode, err error) {
+	err = api.callContract(stakingContract,
+		CallContract{
+			Function: "getNodeList",
+			Args:     "[]",
+		},
+		&list,
+	)
+	return list, nil
+}
+
+func (api *API) GetNodeVotesList(nodeID string) (list []Vote, err error) {
+	args, _ := json.Marshal([]string{nodeID})
+	err = api.callContract(stakingContract,
+		CallContract{
+			Function: "getNodeVoteStatistic",
+			Args:     string(args),
+		},
+		&list,
+	)
+	return list, err
 }

@@ -8,8 +8,8 @@ CREATE TABLE `users`
     `usr_username`     varchar(255)     NOT NULL,
     `usr_mute`         tinyint(4)       NOT NULL DEFAULT '0',
     `usr_step`         varchar(255)     NOT NULL DEFAULT '',
-    `usr_min_treshold` decimal(20, 10)  NOT NULL DEFAULT '0.0000000000',
-    `usr_max_treshold` decimal(20, 10)  NOT NULL DEFAULT '0.0000000000',
+    `usr_min_threshold` decimal(30, 10)  NOT NULL DEFAULT '0.0000000000',
+    `usr_max_threshold` decimal(30, 10)  NOT NULL DEFAULT '0.0000000000',
     `usr_created_at`   timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`usr_id`),
     UNIQUE KEY `users_usr_tg_id_uindex` (`usr_tg_id`)

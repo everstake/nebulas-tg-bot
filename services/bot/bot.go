@@ -17,20 +17,24 @@ import (
 	"sync"
 )
 
+const StakingContract = "n214bLrE3nREcpRewHXF7qRDWCcaxRSiUdw"
+
 type (
 	Bot struct {
-		cfg         config.Config
-		dao         dao.DAO
-		api         *tgbotapi.BotAPI
-		node        NodeAPI
-		market      marketAPI
-		routes      map[string]Route
-		dictionary  models.Dictionary
-		cachedItems map[uint64]map[string]interface{} // [userID][key]
-		mu          *sync.RWMutex
-		addresses   map[string]map[uint64]struct{} // [address][userID]
-		validators  map[string]map[uint64]struct{} // [address][userID]
-		users       map[uint64]models.User
+		cfg                  config.Config
+		dao                  dao.DAO
+		api                  *tgbotapi.BotAPI
+		node                 NodeAPI
+		market               marketAPI
+		routes               map[string]Route
+		dictionary           models.Dictionary
+		cachedItems          map[uint64]map[string]interface{} // [userID][key]
+		mu                   *sync.RWMutex
+		addresses            map[string]map[uint64]struct{} // [address][userID]
+		validators           map[string]map[uint64]struct{} // [address][userID]
+		users                map[uint64]models.User
+		nodes                map[string]node.ValidatorNode
+		lastStabilityIndexes map[string]float64
 	}
 	marketAPI interface {
 		GetNASPrice() decimal.Decimal
@@ -41,21 +45,25 @@ type (
 		GetAccountState(address string) (state node.AccountState, err error)
 		GetBlock(height uint64) (block node.Block, err error)
 		GetLatestIrreversibleBlock() (block node.Block, err error)
-		GetNAXBalance(address string) (result node.NAXBalanceResult, err error)
+		GetNAXBalance(address string) (result decimal.Decimal, err error)
+		GetNodesList() (list []node.ValidatorNode, err error)
+		GetNodeVotesList(nodeID string) (list []node.Vote, err error)
 	}
 )
 
 func NewBot(d dao.DAO, cfg config.Config) *Bot {
 	return &Bot{
-		cfg:         cfg,
-		dao:         d,
-		cachedItems: make(map[uint64]map[string]interface{}),
-		market:      market.NewMarket(),
-		node:        node.NewAPI(cfg.Node),
-		mu:          &sync.RWMutex{},
-		addresses:   make(map[string]map[uint64]struct{}),
-		validators:  make(map[string]map[uint64]struct{}),
-		users:       make(map[uint64]models.User),
+		cfg:                  cfg,
+		dao:                  d,
+		cachedItems:          make(map[uint64]map[string]interface{}),
+		market:               market.NewMarket(),
+		node:                 node.NewAPI(cfg.Node),
+		mu:                   &sync.RWMutex{},
+		addresses:            make(map[string]map[uint64]struct{}),
+		validators:           make(map[string]map[uint64]struct{}),
+		users:                make(map[uint64]models.User),
+		nodes:                make(map[string]node.ValidatorNode),
+		lastStabilityIndexes: make(map[string]float64),
 	}
 }
 
@@ -77,6 +85,11 @@ func (bot *Bot) Run() (err error) {
 	err = bot.setAddresses()
 	if err != nil {
 		return fmt.Errorf("setAddresses: %s", err.Error())
+	}
+
+	err = bot.setNodes()
+	if err != nil {
+		return fmt.Errorf("setNodes: %s", err.Error())
 	}
 
 	go bot.market.Run()
@@ -193,10 +206,11 @@ func (bot *Bot) findOrCreateUser(update tgbotapi.Update) (user models.User, err 
 	}
 	if len(users) == 0 {
 		user, err = bot.dao.CreateUser(models.User{
-			TgID:     tgID,
-			Name:     update.Message.Chat.FirstName + " " + update.Message.Chat.LastName,
-			Username: update.Message.Chat.UserName,
-			Lang:     "en",
+			TgID:        tgID,
+			Name:        update.Message.Chat.FirstName + " " + update.Message.Chat.LastName,
+			Username:    update.Message.Chat.UserName,
+			Lang:        "en",
+			MaxThreshold: decimal.NewFromFloat(99999999999),
 		})
 		if err != nil {
 			return user, fmt.Errorf("dao.CreateUser: %s", err.Error())

@@ -15,7 +15,7 @@ type User struct {
 	Name        string          `db:"usr_name"`
 	Mute        bool            `db:"usr_mute"`
 	Step        string          `db:"usr_step"`
-	MinTreshold decimal.Decimal `db:"usr_min_treshold"`
-	MaxTreshold decimal.Decimal `db:"usr_max_treshold"`
+	MinThreshold decimal.Decimal `db:"usr_min_threshold"`
+	MaxThreshold decimal.Decimal `db:"usr_max_threshold"`
 	CreatedAt   time.Time       `db:"usr_created_at"`
 }

@@ -1,22 +1,22 @@
 {
   "b.add_subscription": {
-    "en": "Add Subscription",
-    "cn": "(CN) Add Subscription"
+    "en": "\uD83D\uDCD8 Add Subscription",
+    "cn": "(CN) \uD83D\uDCD8 Add Subscription"
   },
   "b.show_subscriptions": {
-    "en": "Show Addresses",
-    "cn": "(CN) Show Addresses"
+    "en": "\uD83D\uDCD6 Show Addresses",
+    "cn": "(CN) \uD83D\uDCD6 Show Addresses"
   },
   "b.settings": {
     "en": "⚙️ Settings",
     "cn": "(CN) Settings"
   },
   "b.lang_en": {
-    "en": "English",
+    "en": "\uD83C\uDDEC\uD83C\uDDE7 English",
     "cn": "(CN) English"
   },
   "b.lang_cn": {
-    "en": "China",
+    "en": "\uD83C\uDDE8\uD83C\uDDF3 China",
     "cn": "(CN) China"
   },
   "t.welcome": {
@@ -32,7 +32,7 @@
     "cn": "(CN) Wrong lang"
   },
   "t.menu": {
-    "en": "Menu",
+    "en": "\uD83D\uDCDC Menu",
     "cn": "(CN) Menu"
   },
   "t.choose_option": {
@@ -48,7 +48,7 @@
     "cn": "(CN) Wrong option"
   },
   "b.return_back": {
-    "en": "Return back",
+    "en": "◀️ Return back",
     "cn": "(CN) Return back"
   },
   "t.paste_your_address": {
@@ -76,7 +76,7 @@
     "cn": "(CN) Address already added"
   },
   "b.cancel": {
-    "en": "Cancel",
+    "en": "❌ Cancel",
     "cn": "(CN) Cancel"
   },
   "t.choose_address_type": {
@@ -92,11 +92,11 @@
     "cn": "(CN) Validator address"
   },
   "b.mute": {
-    "en": "Mute notifications",
+    "en": "\uD83D\uDD15 Mute notifications",
     "cn": "(CN) Mute notifications"
   },
   "b.unmute": {
-    "en": "Unmute notifications",
+    "en": "\uD83D\uDD14 Unmute notifications",
     "cn": "(CN) Unmute notifications"
   },
   "t.muted": {
@@ -107,32 +107,64 @@
     "en": "Notifications have been enabled",
     "cn": "(CN) Notifications have been enabled"
   },
-  "b.change_treshold": {
-    "en": "Change treshold",
-    "cn": "(CN) Change treshold"
+  "b.change_threshold": {
+    "en": "Change threshold",
+    "cn": "(CN) Change threshold"
   },
-  "t.paste_treshold": {
-    "en": "Paste your min and max treshold. Example: `0.5 50` ",
-    "cn": "(CN) Paste your min and max treshold. Example: `0.5 50` "
+  "t.paste_threshold": {
+    "en": "Paste your min and max threshold. Example: `0.5 50` ",
+    "cn": "(CN) Paste your min and max threshold. Example: `0.5 50` "
   },
-  "t.invalid_treshold": {
-    "en": "Invalid treshold format. Example: `0.5 50` ",
-    "cn": "(CN) Invalid treshold format. Example: `0.5 50`  "
+  "t.invalid_threshold": {
+    "en": "Invalid threshold format. Example: `0.5 50` ",
+    "cn": "(CN) Invalid threshold format. Example: `0.5 50`  "
   },
   "t.successful_updated": {
     "en": "successful Updated ",
     "cn": "(CN) successful Updated  "
   },
   "b.delete": {
-    "en": "Delete",
+    "en": "❌ Delete",
     "cn": "(CN) Delete"
   },
   "b.link": {
-    "en": "Link",
+    "en": "\uD83D\uDD17 Link",
     "cn": "(CN) Link"
   },
   "t.not_have_addresses": {
-    "en": "You don`t have any address",
+    "en": "You don`t have any address \uD83E\uDD37\uD83C\uDFFB\u200D♂️",
     "cn": "(CN) You don`t have any address"
+  },
+  "t.new_delegation": {
+    "en": "[Delegation] \nfrom: %s \nto: %s \nvalue: %s NAX",
+    "cn": "(CN) [Delegation] \nfrom: %s \nto: %s \nvalue: %s NAX"
+  },
+  "t.new_undelegation": {
+    "en": "[Undelegation] \nfrom: %s \nto: %s \nvalue: %s NAX",
+    "cn": "(CN) [Undelegation] \nfrom: %s \nto: %s \nvalue: %s NAX"
+  },
+  "t.changed_stability_index": {
+    "en": " The stability index of %s has been reduced to %f.2",
+    "cn": "(CH) The stability index of %s has been reduced to %f.2"
+  },
+  "t.transfer_nax": {
+    "en": "[Transfer NAX] \nfrom: %s \nto: %s \nvalue: %s NAX",
+    "cn": "(CH) [Transfer NAX] \nfrom: %s \nto: %s \nvalue: %s NAX"
+  },
+  "t.address_subscription": {
+    "en": "Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s",
+    "cn": "(CH) Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s"
+  },
+  "t.validator_subscription": {
+    "en": "Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s\nVotes: %s",
+    "cn": "(CH) Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s\nVotes: %s"
+  },
+  "t.transaction": {
+    "en": "[Transaction]\nHash: %s\nFrom: %s\nTo: %s\nValue: %s NAS\nBlock: %d\nStatus: %s",
+    "cn": "(CH) [Transaction]\nHash: %s\nFrom: %s\nTo: %s\nValue: %s NAS\nBlock: %d\nStatus: %s"
+  },
+  "t.inclusion_governance": {
+    "en": "%s validator has been added to the governance committee",
+    "cn": "(CH) %s validator has been added to the governance committee"
   }
 }
