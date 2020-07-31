@@ -89,6 +89,7 @@ func (bot *Bot) showSubscriptions(user models.User) (err error) {
 				state.NAX.Truncate(4).String(),
 				state.NAX.Mul(naxPrice).Truncate(0).String(),
 				state.Type,
+				state.VotedAmount.Truncate(4).String(),
 			)
 		case models.AddressTypeValidator:
 			text = fmt.Sprintf(
@@ -154,6 +155,7 @@ func (bot *Bot) getSubscriptions(user models.User) (states []models.AddressState
 				return
 			}
 			totalVotes := decimal.Zero
+			votedAmount := decimal.Zero
 			if address.Type == models.AddressTypeValidator {
 				var nodeID string
 				bot.mu.RLock()
@@ -179,14 +181,22 @@ func (bot *Bot) getSubscriptions(user models.User) (states []models.AddressState
 						totalVotes = totalVotes.Div(node.PrecisionDivNAX)
 					}
 				}
+			} else {
+				votedAmount, err = bot.node.GetVotedNAX(address.Address)
+				if err != nil {
+					log.Error("getSubscriptions: node.GetVotedNAX: %s", err.Error())
+				} else {
+					votedAmount = votedAmount.Div(node.PrecisionDivNAX)
+				}
 			}
 			stateCh <- models.AddressState{
-				Address:    address.Address,
-				NAS:        as.Result.Balance.Div(node.PrecisionDivNAS),
-				NAX:        naxBalance.Div(node.PrecisionDivNAX),
-				Alias:      address.Alias,
-				Type:       address.Type,
-				TotalVotes: totalVotes,
+				Address:     address.Address,
+				NAS:         as.Result.Balance.Div(node.PrecisionDivNAS),
+				NAX:         naxBalance.Div(node.PrecisionDivNAX),
+				Alias:       address.Alias,
+				Type:        address.Type,
+				TotalVotes:  totalVotes,
+				VotedAmount: votedAmount,
 			}
 		}(i)
 	}

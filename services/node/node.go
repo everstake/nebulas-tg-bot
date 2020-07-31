@@ -104,6 +104,12 @@ type (
 		Address string          `json:"address"`
 		Value   decimal.Decimal `json:"value"`
 	}
+	CancelableVote struct {
+		Detail struct {
+			ID string `json:"id"`
+		} `json:"detail"`
+		Value decimal.Decimal `json:"value"`
+	}
 
 	Response struct {
 		Result struct {
@@ -241,4 +247,20 @@ func (api *API) GetNodeVotesList(nodeID string) (list []Vote, err error) {
 		&list,
 	)
 	return list, err
+}
+
+func (api *API) GetVotedNAX(address string) (amount decimal.Decimal, err error) {
+	var list map[string]CancelableVote
+	args, _ := json.Marshal([]string{address})
+	err = api.callContract(stakingContract,
+		CallContract{
+			Function: "getCancelableVoteData",
+			Args:     string(args),
+		},
+		&list,
+	)
+	for _, item := range list {
+		amount = amount.Add(item.Value)
+	}
+	return amount, err
 }

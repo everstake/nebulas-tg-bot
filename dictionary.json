@@ -152,8 +152,8 @@
     "cn": "(CH) [Transfer NAX] \nfrom: %s \nto: %s \nvalue: %s NAX"
   },
   "t.address_subscription": {
-    "en": "Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s",
-    "cn": "(CH) Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s"
+    "en": "Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s\nVoted: %s NAX",
+    "cn": "(CH) Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s\nVoted: %s NAX"
   },
   "t.validator_subscription": {
     "en": "Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s\nVotes: %s",

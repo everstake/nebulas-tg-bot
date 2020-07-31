@@ -48,6 +48,7 @@ type (
 		GetNAXBalance(address string) (result decimal.Decimal, err error)
 		GetNodesList() (list []node.ValidatorNode, err error)
 		GetNodeVotesList(nodeID string) (list []node.Vote, err error)
+		GetVotedNAX(address string) (amount decimal.Decimal, err error)
 	}
 )
 
