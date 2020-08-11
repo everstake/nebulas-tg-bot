@@ -1,170 +1,170 @@
 {
   "b.add_subscription": {
     "en": "\uD83D\uDCD8 Add Subscription",
-    "cn": "(CN) \uD83D\uDCD8 Add Subscription"
+    "cn": "\uD83D\uDCD8 添加订阅"
   },
   "b.show_subscriptions": {
     "en": "\uD83D\uDCD6 Show Addresses",
-    "cn": "(CN) \uD83D\uDCD6 Show Addresses"
+    "cn": "\uD83D\uDCD6 显示地址"
   },
   "b.settings": {
     "en": "⚙️ Settings",
-    "cn": "(CN) Settings"
+    "cn": "⚙️ 设置"
   },
   "b.lang_en": {
     "en": "\uD83C\uDDEC\uD83C\uDDE7 English",
-    "cn": "(CN) English"
+    "cn": "\uD83C\uDDEC\uD83C\uDDE7 英文"
   },
   "b.lang_cn": {
     "en": "\uD83C\uDDE8\uD83C\uDDF3 China",
-    "cn": "(CN) China"
+    "cn": "\uD83C\uDDE8\uD83C\uDDF3 简体中文"
   },
   "t.welcome": {
     "en": "Welcome",
-    "cn": "(CN) Welcome"
+    "cn": "欢迎"
   },
   "t.choose_lang": {
     "en": "Choose your lang",
-    "cn": "(CN) Choose your lang"
+    "cn": "选择您的语言"
   },
   "t.wrong_lang": {
     "en": "Wrong lang",
-    "cn": "(CN) Wrong lang"
+    "cn": "语言错误"
   },
   "t.menu": {
     "en": "\uD83D\uDCDC Menu",
-    "cn": "(CN) Menu"
+    "cn": "\uD83D\uDCDC 菜单"
   },
   "t.choose_option": {
     "en": "Choose option",
-    "cn": "(CN) Choose option"
+    "cn": "选择选项"
   },
   "b.change_lang": {
     "en": "Change lang",
-    "cn": "(CN) Change lang"
+    "cn": "变更语言"
   },
   "t.wrong_option": {
     "en": "Wrong option",
-    "cn": "(CN) Wrong option"
+    "cn": "选项错误"
   },
   "b.return_back": {
     "en": "◀️ Return back",
-    "cn": "(CN) Return back"
+    "cn": "◀️ 返回"
   },
   "t.paste_your_address": {
     "en": "Paste your address",
-    "cn": "(CN) Paste your address"
+    "cn": "粘贴您的地址"
   },
   "t.wrong_address": {
     "en": "Wrong address",
-    "cn": "(CN) Wrong address"
+    "cn": "错误的地址"
   },
   "t.enter_address_alias": {
     "en": "Enter address alias",
-    "cn": "(CN) Enter address alias"
+    "cn": "输入地址别名"
   },
   "t.oops": {
-    "en": "oops something went wrong",
-    "cn": "(CN) oops something went wrong"
+    "en": "oops something went wrong \uD83D\uDE31",
+    "cn": "哎呀......出了错! \uD83D\uDE31"
   },
   "t.address_added": {
-    "en": "Address was added successful",
-    "cn": "(CN) Address  was successful added"
+    "en": "Address was added successfully ✅",
+    "cn": "地址已成功添加 ✅"
   },
   "t.address_already_added": {
     "en": "Address already added",
-    "cn": "(CN) Address already added"
+    "cn": "地址已添加"
   },
   "b.cancel": {
     "en": "❌ Cancel",
-    "cn": "(CN) Cancel"
+    "cn": "❌ 取消"
   },
   "t.choose_address_type": {
     "en": "Choose type of address",
-    "cn": "(CN) Choose type of address"
+    "cn": "选择地址类型"
   },
   "b.account_address": {
     "en": "Account address",
-    "cn": "(CN) Account address"
+    "cn": "帐户地址"
   },
   "b.validator_address": {
     "en": "Validator address",
-    "cn": "(CN) Validator address"
+    "cn": "验证者地址"
   },
   "b.mute": {
     "en": "\uD83D\uDD15 Mute notifications",
-    "cn": "(CN) Mute notifications"
+    "cn": "\uD83D\uDD15 静音通知"
   },
   "b.unmute": {
     "en": "\uD83D\uDD14 Unmute notifications",
-    "cn": "(CN) Unmute notifications"
+    "cn": "\uD83D\uDD14 取消静音通知"
   },
   "t.muted": {
     "en": "Notifications have been disabled",
-    "cn": "(CN) Notifications have been disabled"
+    "cn": "通知已被禁用"
   },
   "t.unmuted": {
     "en": "Notifications have been enabled",
-    "cn": "(CN) Notifications have been enabled"
+    "cn": "通知已启用"
   },
   "b.change_threshold": {
     "en": "Change threshold",
-    "cn": "(CN) Change threshold"
+    "cn": "阈值变化"
   },
   "t.paste_threshold": {
     "en": "Paste your min and max threshold. Example: `0.5 50` ",
-    "cn": "(CN) Paste your min and max threshold. Example: `0.5 50` "
+    "cn": "粘贴您的最小和最大阈值。 例： `0.5 50` "
   },
   "t.invalid_threshold": {
     "en": "Invalid threshold format. Example: `0.5 50` ",
-    "cn": "(CN) Invalid threshold format. Example: `0.5 50`  "
+    "cn": "无效的阈值格式。 例： `0.5 50`  "
   },
   "t.successful_updated": {
-    "en": "successful Updated ",
-    "cn": "(CN) successful Updated  "
+    "en": "Successfully Updated ✅",
+    "cn": "成功更新 ✅"
   },
   "b.delete": {
     "en": "❌ Delete",
-    "cn": "(CN) Delete"
+    "cn": "❌ 删除"
   },
   "b.link": {
     "en": "\uD83D\uDD17 Link",
-    "cn": "(CN) Link"
+    "cn": "\uD83D\uDD17 链接"
   },
   "t.not_have_addresses": {
-    "en": "You don`t have any address \uD83E\uDD37\uD83C\uDFFB\u200D♂️",
-    "cn": "(CN) You don`t have any address"
+    "en": "You don`t have any addresses \uD83E\uDD37\uD83C\uDFFB\u200D♂️",
+    "cn": "您没有任何地址 \uD83E\uDD37\uD83C\uDFFB\u200D♂️"
   },
   "t.new_delegation": {
-    "en": "[Delegation] \nfrom: %s \nto: %s \nvalue: %s NAX",
-    "cn": "(CN) [Delegation] \nfrom: %s \nto: %s \nvalue: %s NAX"
+    "en": "\uD83D\uDC8EDelegation\uD83D\uDC8E \nfrom: %s \nto: %s \nvalue: %s NAX",
+    "cn": "\uD83D\uDC8E委托\uD83D\uDC8E \n从: %s \n到: %s \n值: %s NAX"
   },
   "t.new_undelegation": {
-    "en": "[Undelegation] \nfrom: %s \nto: %s \nvalue: %s NAX",
-    "cn": "(CN) [Undelegation] \nfrom: %s \nto: %s \nvalue: %s NAX"
+    "en": "\uD83D\uDC8EUndelegation\uD83D\uDC8E \nfrom: %s \nto: %s \nvalue: %s NAX",
+    "cn": "\uD83D\uDC8E取消委托\uD83D\uDC8E \n从: %s \n到: %s \n值: %s NAX"
   },
   "t.changed_stability_index": {
     "en": " The stability index of %s has been reduced to %f.2",
-    "cn": "(CH) The stability index of %s has been reduced to %f.2"
+    "cn": "%s 的稳定性指数已降至 %f.2"
   },
   "t.transfer_nax": {
-    "en": "[Transfer NAX] \nfrom: %s \nto: %s \nvalue: %s NAX",
-    "cn": "(CH) [Transfer NAX] \nfrom: %s \nto: %s \nvalue: %s NAX"
+    "en": "\uD83D\uDCB0Transfer NAX\uD83D\uDCB0 \nfrom: %s \nto: %s \nvalue: %s NAX",
+    "cn": "\uD83D\uDCB0转移 NAX\uD83D\uDCB0 \n从: %s \n到: %s \n值: %s NAX"
   },
   "t.address_subscription": {
     "en": "Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s\nVoted: %s NAX",
-    "cn": "(CH) Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s\nVoted: %s NAX"
+    "cn": "别名: %s\n地址: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\n类型: %s\n已投票: %s NAX"
   },
   "t.validator_subscription": {
     "en": "Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s\nVotes: %s",
-    "cn": "(CH) Alias: %s\nAddress: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\nType: %s\nVotes: %s"
+    "cn": "别名: %s\n地址: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\n类型: %s\n投票: %s"
   },
   "t.transaction": {
-    "en": "[Transaction]\nHash: %s\nFrom: %s\nTo: %s\nValue: %s NAS\nBlock: %d\nStatus: %s",
-    "cn": "(CH) [Transaction]\nHash: %s\nFrom: %s\nTo: %s\nValue: %s NAS\nBlock: %d\nStatus: %s"
+    "en": "\uD83D\uDCB0Transaction\uD83D\uDCB0\nHash: %s\nFrom: %s\nTo: %s\nValue: %s NAS\nBlock: %d\nStatus: %s",
+    "cn": "\uD83D\uDCB0交易\uD83D\uDCB0\n哈希: %s\n从: %s\n到: %s\n值: %s NAS\n块: %d\n状态: %s"
   },
   "t.inclusion_governance": {
     "en": "%s validator has been added to the governance committee",
-    "cn": "(CH) %s validator has been added to the governance committee"
+    "cn": "%s 验证者已添加到治理委员会"
   }
 }

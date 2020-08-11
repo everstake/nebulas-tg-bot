@@ -18,6 +18,7 @@ const blocksInGovernancePeriod = 820
 const candidateNode = 3
 const consensusNode = 2
 const startPointBlock = 4893100 // 23348  polling cycle
+const BlockedByUserErr  = "Forbidden: bot was blocked by the user"
 
 func (bot *Bot) Parsing() {
 	for {
@@ -222,7 +223,7 @@ func (bot *Bot) stakingNotify(tx node.Transaction) error {
 				)
 			}
 			msg := tgbotapi.NewMessage(user.TgID, text)
-			_, err := bot.api.Send(msg)
+			err := bot.sendMsg(msg)
 			if err != nil {
 				return fmt.Errorf("api.Send: %s", err.Error())
 			}
@@ -272,7 +273,7 @@ func (bot *Bot) stakingNotify(tx node.Transaction) error {
 				value,
 			)
 			msg := tgbotapi.NewMessage(user.TgID, text)
-			_, err := bot.api.Send(msg)
+			err := bot.sendMsg(msg)
 			if err != nil {
 				return fmt.Errorf("api.Send: %s", err.Error())
 			}

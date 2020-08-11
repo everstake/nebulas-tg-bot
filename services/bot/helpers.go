@@ -237,3 +237,13 @@ func getUniqStrings(items []string) []string {
 	return nItems
 
 }
+
+func (bot *Bot) sendMsg(msg tgbotapi.Chattable) error {
+	_, err := bot.api.Send(msg)
+	if err != nil {
+		if err.Error() == BlockedByUserErr {
+			return nil
+		}
+	}
+	return err
+}
