@@ -375,7 +375,7 @@ func (bot *Bot) SetRoutes() {
 				case models.AddressTypeValidator:
 					bot.addValidatorAddress(user, addressModel)
 				case models.AddressTypeAccount:
-					bot.addValidatorAddress(user, addressModel)
+					bot.addAccountAddress(user, addressModel)
 				}
 
 				msg := tgbotapi.NewMessage(user.TgID, bot.dictionary.Get("t.address_added", user.Lang))

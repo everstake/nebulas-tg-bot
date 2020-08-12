@@ -104,6 +104,13 @@ func (bot *Bot) txNotify(address string, tx node.Transaction) {
 		}
 		users[userID] = user
 	}
+	for userID := range bot.validators[address] {
+		user, ok := bot.users[userID]
+		if !ok {
+			continue
+		}
+		users[userID] = user
+	}
 	bot.mu.RUnlock()
 	for _, user := range users {
 		if user.Mute {

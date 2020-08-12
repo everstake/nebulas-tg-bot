@@ -79,9 +79,6 @@ func (bot *Bot) Run() (err error) {
 		return fmt.Errorf("ioutil.ReadFile: %s", err.Error())
 	}
 
-
-
-
 	err = json.Unmarshal(data, &bot.dictionary)
 	if err != nil {
 		return fmt.Errorf("json.Unmarshal: %s", err.Error())
