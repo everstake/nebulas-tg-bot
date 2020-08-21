@@ -160,8 +160,8 @@
     "cn": "别名: %s\n地址: %s\nNAS: %s (%s$)\nNAX: %s (%s$)\n类型: %s\n投票: %s"
   },
   "t.transaction": {
-    "en": "\uD83D\uDCB0Transaction\uD83D\uDCB0\nHash: %s\nFrom: %s\nTo: %s\nValue: %s NAS\nBlock: %d\nStatus: %s",
-    "cn": "\uD83D\uDCB0交易\uD83D\uDCB0\n哈希: %s\n从: %s\n到: %s\n值: %s NAS\n块: %d\n状态: %s"
+    "en": "\uD83D\uDCB0Transaction\uD83D\uDCB0\nHash: %s\nFrom: %s\nTo: %s\nValue: %s NAS\nBlock: %d\nStatus: %s\nGas price: %s\nGas used: %s\nNonce: %d\nType: %s\nTimestamp: %s",
+    "cn": "\uD83D\uDCB0交易\uD83D\uDCB0\n哈希: %s\n从: %s\n到: %s\n值: %s NAS\n块: %d\n状态: %s\nGas price: %s\nGas used: %s\nNonce: %d\nType: %s\nTimestamp: %s"
   },
   "t.inclusion_governance": {
     "en": "%s validator has been added to the governance committee",
