@@ -85,9 +85,9 @@ func (bot *Bot) showSubscriptions(user models.User) (err error) {
 				state.Alias,
 				state.Address,
 				state.NAS.Truncate(4).String(),
-				state.NAS.Mul(nasPrice).Truncate(0).String(),
+				state.NAS.Mul(nasPrice).Truncate(4).String(),
 				state.NAX.Truncate(4).String(),
-				state.NAX.Mul(naxPrice).Truncate(0).String(),
+				state.NAX.Mul(naxPrice).Truncate(6).String(),
 				state.Type,
 				state.VotedAmount.Truncate(4).String(),
 			)
@@ -97,9 +97,9 @@ func (bot *Bot) showSubscriptions(user models.User) (err error) {
 				state.Alias,
 				state.Address,
 				state.NAS.Truncate(4).String(),
-				state.NAS.Mul(nasPrice).Truncate(0).String(),
+				state.NAS.Mul(nasPrice).Truncate(4).String(),
 				state.NAX.Truncate(4).String(),
-				state.NAX.Mul(naxPrice).Truncate(0).String(),
+				state.NAX.Mul(naxPrice).Truncate(6).String(),
 				state.Type,
 				state.TotalVotes,
 			)

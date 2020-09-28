@@ -18,7 +18,7 @@ const blocksInGovernancePeriod = 820
 const candidateNode = 3
 const consensusNode = 2
 const startPointBlock = 4893100 // 23348  polling cycle
-const BlockedByUserErr  = "Forbidden: bot was blocked by the user"
+const BlockedByUserErr = "Forbidden: bot was blocked by the user"
 
 func (bot *Bot) Parsing() {
 	for {
@@ -124,6 +124,11 @@ func (bot *Bot) txNotify(address string, tx node.Transaction) {
 			value.Truncate(4).String(),
 			tx.BlockHeight,
 			status,
+			tx.GasLimit.String(),
+			tx.GasUsed.String(),
+			tx.Nonce,
+			tx.Type,
+			time.Unix(tx.Timestamp, 0).String(),
 		)
 
 		if value.GreaterThan(user.MinThreshold) && value.LessThanOrEqual(user.MaxThreshold) {
