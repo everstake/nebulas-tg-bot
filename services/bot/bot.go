@@ -217,6 +217,9 @@ func (bot *Bot) findOrCreateUser(update tgbotapi.Update) (user models.User, err 
 		if err != nil {
 			return user, fmt.Errorf("dao.CreateUser: %s", err.Error())
 		}
+		bot.mu.Lock()
+		bot.users[user.ID] = user
+		bot.mu.Unlock()
 	} else {
 		user = users[0]
 	}
